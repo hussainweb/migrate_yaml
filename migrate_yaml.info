@@ -1,1 +1,8 @@
 name = Migrate Yaml
+description = "Define migrations in YAML format"
+package = "Migration"
+core = 7.x
+
+dependencies[] = migrate
+
+files[] = migrate_yaml.inc
