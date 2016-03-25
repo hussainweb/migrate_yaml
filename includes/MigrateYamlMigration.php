@@ -13,19 +13,13 @@ abstract class MigrateYamlMigration extends Migration {
     $map = $arguments['map'];
     $dependencies = $arguments['dependencies'];
     $unmigrated_mappings = $arguments['unmigrated_mappings'];
-    unset(
-      $arguments['mappings'],
-      $arguments['source'],
-      $arguments['destination'],
-      $arguments['map'],
-      $arguments['dependencies'],
-      $arguments['unmigrated_mappings']
-  );
 
     parent::__construct($arguments);
 
     // Set up the migration with all our data.
-    $this->addHardDependencies($dependencies);
+    if ($dependencies) {
+      $this->addHardDependencies($dependencies);
+    }
 
     $this->source = $this->getSourceFromConfig($source, $arguments);
     $this->destination = $this->getDestinationFromConfig($destination, $arguments);
@@ -56,7 +50,7 @@ abstract class MigrateYamlMigration extends Migration {
     $destination_class = $arguments['destination']['class'];
     // @todo Add support to make the map class configurable.
     return new MigrateSQLMap(
-      $arguments['name'],
+      $arguments['machine_name'],
       $map['source_key'],
       $destination_class::getKeySchema()
     );
@@ -69,10 +63,10 @@ abstract class MigrateYamlMigration extends Migration {
       );
     }
 
-    $mapping = $this->addFieldMapping($destination_field, $mapping['source_field']);
+    $field_mapping = $this->addFieldMapping($destination_field, $mapping['source_field']);
 
     if (isset($mapping['source_migration'])) {
-      $mapping->sourceMigration($mapping['source_migration']);
+      $field_mapping->sourceMigration($mapping['source_migration']);
     }
 
     if (isset($mapping['callbacks'])) {
@@ -81,7 +75,7 @@ abstract class MigrateYamlMigration extends Migration {
         $callbacks = array($callbacks);
       }
       foreach ($callbacks as $callback) {
-        $mapping->callbacks($callback);
+        $field_mapping->callbacks($callback);
       }
     }
   }

@@ -29,7 +29,7 @@ class MigrateYaml {
     $name = $data['name'];
     $title = $data['title'];
     $arguments = isset($data['arguments']) ? $data['arguments'] : array();
-    MigrateGroup::register($name, $title, $arguments);
+    MigrateGroup::register($name, $title, $arguments + $this->commonArguments);
   }
 
   public function registerMigration($data) {
@@ -47,8 +47,9 @@ class MigrateYaml {
     $arguments['dependencies'] = $data['dependencies'];
     $arguments['unmigrated_mappings'] = $data['unmigrated_mappings'];
     $arguments['machine_name'] = $data['name'];
+    $arguments['group_name'] = $data['group_name'];
 
-    Migration::registerMigration($class, $data['name'], $arguments);
+    Migration::registerMigration($class, $data['name'], $arguments + $this->commonArguments);
   }
 
 }
