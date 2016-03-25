@@ -3,6 +3,7 @@ description = "Define migrations in YAML format"
 package = "Migration"
 core = 7.x
 
+dependencies[] = composer_manager
 dependencies[] = migrate
 
 files[] = migrate_yaml.inc
