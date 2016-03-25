@@ -34,10 +34,9 @@ class MigrateYaml {
 
   protected function registerMigration($data) {
     $class = isset($data['class_name']) ? $data['class_name'] : 'MigrateYamlMigration';
-    if ($class != 'MigrateYamlMigration' && !in_array('MigrateYamlMigration', class_parents($class))) {
+    if (!in_array('MigrateYamlMigration', class_parents($class))) {
       throw new LogicException("The class defined in migration must extend MigrateYamlMigration");
     }
-    unset($data['class_name']);
 
     $arguments = isset($data['arguments']) ? $data['arguments'] : array();
 
@@ -45,6 +44,9 @@ class MigrateYaml {
     $arguments['source'] = $data['source'];
     $arguments['destination'] = $data['destination'];
     $arguments['map'] = $data['map'];
+    $arguments['dependencies'] = $data['dependencies'];
+    $arguments['unmigrated_mappings'] = $data['unmigrated_mappings'];
+    $arguments['machine_name'] = $data['name'];
 
     Migration::registerMigration($class, $data['name'], $arguments);
   }
