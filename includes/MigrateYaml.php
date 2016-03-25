@@ -25,14 +25,14 @@ class MigrateYaml {
     }
   }
 
-  protected function registerGroup($data) {
+  public function registerGroup($data) {
     $name = $data['name'];
     $title = $data['title'];
     $arguments = isset($data['arguments']) ? $data['arguments'] : array();
     MigrateGroup::register($name, $title, $arguments);
   }
 
-  protected function registerMigration($data) {
+  public function registerMigration($data) {
     $class = isset($data['class_name']) ? $data['class_name'] : 'MigrateYamlMigration';
     if (!in_array('MigrateYamlMigration', class_parents($class))) {
       throw new LogicException("The class defined in migration must extend MigrateYamlMigration");

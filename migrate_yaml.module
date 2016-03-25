@@ -5,3 +5,75 @@
  * Migrate Yaml module file.
  */
 
+use Symfony\Component\Yaml\Yaml;
+
+/**
+ * Implements hook_flush_caches().
+ */
+function migrate_yaml_flush_caches() {
+  migrate_yaml_register_migrations(TRUE);
+}
+
+function migrate_yaml_register_migrations($reset = NULL) {
+  $migrations = migrate_yaml_get_module_apis($reset);
+
+  foreach ($migrations as $module => $migration_yaml_data) {
+    $migration_yaml_data += array(
+      'groups path' => '',
+      'recursive' => TRUE,
+      'common arguments' => array(),
+      'group arguments' => array(),
+    );
+
+    $module_path = DRUPAL_ROOT . base_path() . drupal_get_path('module', $module) . '/';
+    $path = $module_path . $migration_yaml_data['path'];
+    $groups_path = $module_path . $migration_yaml_data['groups path'];
+
+    $recursive = $migration_yaml_data['recursive'];
+    $common_arguments = $migration_yaml_data['common arguments'];
+    $group_arguments = $migration_yaml_data['group arguments'];
+
+    $options = array(
+      'recuse' => $recursive,
+      'key' => 'filename',
+    );
+
+    $yaml_files = file_scan_directory($path, '/\.yaml/', $options);
+    $group_yaml_files = file_scan_directory($groups_path, '/\.yaml/', $options);
+
+    _migrate_yaml_register_files($group_yaml_files, 'group', $group_arguments);
+    _migrate_yaml_register_files($yaml_files, 'migration', $common_arguments);
+  }
+}
+
+function _migrate_yaml_register_files($files, $type, $arguments) {
+  $yaml = new MigrateYaml($arguments);
+  foreach ($files as $file) {
+    $data = Yaml::parse(file_get_contents($file->uri));
+    if ($type == 'group') {
+      $yaml->registerGroup($data);
+    }
+    elseif ($type == 'migration') {
+      $yaml->registerMigration($data);
+    }
+  }
+}
+
+/**
+ * Get a list of modules that support the current migrate API.
+ */
+function migrate_yaml_get_module_apis($reset = FALSE) {
+  static $cache = NULL;
+  if ($reset) {
+    $cache = NULL;
+  }
+  if (!isset($cache)) {
+    $cache = array();
+    foreach (module_implements('migrate_yaml_api') as $module) {
+      $function = $module . '_migrate_yaml_api';
+      $cache[$module] = $function();
+    }
+  }
+
+  return $cache;
+}
