@@ -6,4 +6,5 @@ core = 7.x
 dependencies[] = composer_manager
 dependencies[] = migrate
 
-files[] = migrate_yaml.inc
+files[] = includes/MigrateYaml.php
+files[] = includes/MigrateYamlMigration.php
