@@ -63,7 +63,15 @@ abstract class MigrateYamlMigration extends Migration {
       );
     }
 
+    if (!isset($mapping['source_field'])) {
+      $mapping['source_field'] = NULL;
+    }
+
     $field_mapping = $this->addFieldMapping($destination_field, $mapping['source_field']);
+
+    if (isset($mapping['default_value'])) {
+      $field_mapping->defaultValue($mapping['default_value']);
+    }
 
     if (isset($mapping['source_migration'])) {
       $field_mapping->sourceMigration($mapping['source_migration']);
