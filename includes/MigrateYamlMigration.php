@@ -90,11 +90,11 @@ abstract class MigrateYamlMigration extends Migration {
       $this->addUnmigratedDestinations($mapping['destinations'], $issue_group, $warn_on_override);
     }
     if (isset($mapping['destinations_beginning_with'])) {
-      $skip_fields = isset($mapping['destinations_beginning_with']['skip_fields']) ? $mapping['destinations_beginning_with']['skip_fields'] : array();
+      $skip_fields = isset($mapping['skip_fields']) ? $mapping['skip_fields'] : array();
       $this->addUnmigratedDestinationsBeginningWith($mapping['destinations_beginning_with'], $issue_group, $warn_on_override, $skip_fields);
     }
     if (isset($mapping['destinations_callback'])) {
-      $skip_fields = isset($mapping['destinations_callback']['skip_fields']) ? $mapping['destinations_callback']['skip_fields'] : array();
+      $skip_fields = isset($mapping['skip_fields']) ? $mapping['skip_fields'] : array();
       $method = 'getDestinations' . $mapping['destinations_callback'];
       if (method_exists($this, $method)) {
         $fields = $this->$method();
