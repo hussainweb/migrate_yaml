@@ -89,8 +89,37 @@ abstract class MigrateYamlMigration extends Migration {
     if (isset($mapping['destinations'])) {
       $this->addUnmigratedDestinations($mapping['destinations'], $issue_group, $warn_on_override);
     }
-    // @todo: Add support for sources and destinations beginning with phrase.
-    // https://www.drupal.org/node/2694327
+    if (isset($mapping['destinations_beginning_with'])) {
+      $skip_fields = isset($mapping['destinations_beginning_with']['skip_fields']) ? $mapping['destinations_beginning_with']['skip_fields'] : array();
+      $this->addUnmigratedDestinationsBeginningWith($mapping['destinations_beginning_with'], $issue_group, $warn_on_override, $skip_fields);
+    }
+  }
+
+  /**
+   * Helper method to mark all fields beginning with a prefix as DNM.
+   *
+   * @param string $prefix
+   *   Prefix to search for and mark as not for migration.
+   * @param string $issue_group
+   *   (Optional) Group to mark these mappings.
+   * @param bool $warn_on_override
+   *   (Optional) Warn if the mapping is being overridden.
+   * @param array $skip_fields
+   *   (Optional) Array of fields to skip from being marked as DNM.
+   */
+  public function addUnmigratedDestinationsBeginningWith($prefix, $issue_group = NULL, $warn_on_override = TRUE, array $skip_fields = array()) {
+    $unmigrated_fields = array();
+    $fields = $this->destination->fields();
+    $prefix_len = strlen($prefix);
+    foreach ($fields as $field_name => $value) {
+      if (substr($field_name, 0, $prefix_len) == $prefix && !in_array($field_name, $skip_fields)) {
+        $unmigrated_fields[] = $field_name;
+      }
+    }
+
+    if (!empty($unmigrated_fields)) {
+      $this->addUnmigratedDestinations($unmigrated_fields, $issue_group, $warn_on_override);
+    }
   }
 
 }
