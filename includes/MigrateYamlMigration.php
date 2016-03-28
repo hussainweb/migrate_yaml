@@ -93,6 +93,18 @@ abstract class MigrateYamlMigration extends Migration {
       $skip_fields = isset($mapping['destinations_beginning_with']['skip_fields']) ? $mapping['destinations_beginning_with']['skip_fields'] : array();
       $this->addUnmigratedDestinationsBeginningWith($mapping['destinations_beginning_with'], $issue_group, $warn_on_override, $skip_fields);
     }
+    if (isset($mapping['destinations_callback'])) {
+      $skip_fields = isset($mapping['destinations_callback']['skip_fields']) ? $mapping['destinations_callback']['skip_fields'] : array();
+      $method = 'getDestinations' . $mapping['destinations_callback'];
+      if (method_exists($this, $method)) {
+        $fields = $this->$method();
+        $fields = array_diff($fields, $skip_fields);
+        $this->addUnmigratedDestinations($fields, $issue_group, $warn_on_override);
+      }
+      else {
+        drupal_set_message(t('Method %method could not be found on the migration object.', array('%method' => $method)), 'error');
+      }
+    }
   }
 
   /**
