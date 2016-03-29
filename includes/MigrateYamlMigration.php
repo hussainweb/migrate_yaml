@@ -83,6 +83,9 @@ abstract class MigrateYamlMigration extends Migration {
         $callbacks = array($callbacks);
       }
       foreach ($callbacks as $callback) {
+        if (substr($callback, 0, 2) == '::') {
+          $callback = array($this, substr($callback, 2));
+        }
         $field_mapping->callbacks($callback);
       }
     }
