@@ -38,7 +38,11 @@ class MigrateYaml {
       throw new LogicException("The class defined in migration must extend MigrateYamlMigration");
     }
 
-    $arguments = isset($data['arguments']) ? $data['arguments'] : array();
+    $data += array(
+      'arguments' => array(),
+      'dependencies' => array(),
+      'unmigrated_mappings' => array(),
+    );
 
     $arguments['mappings'] = $data['mappings'];
     $arguments['source'] = $data['source'];
