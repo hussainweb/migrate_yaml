@@ -44,6 +44,8 @@ class MigrateYaml {
       'unmigrated_mappings' => array(),
     );
 
+    $arguments = $data['arguments'];
+
     $arguments['mappings'] = $data['mappings'];
     $arguments['source'] = $data['source'];
     $arguments['destination'] = $data['destination'];
