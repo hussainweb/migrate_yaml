@@ -48,11 +48,14 @@ abstract class MigrateYamlMigration extends Migration {
 
   protected function getMapFromConfig(array $map, array $arguments) {
     $destination_class = $arguments['destination']['class'];
+    $key_schema_args = (!empty($arguments['destination']['key_schema_arguments'])) ? $arguments['destination']['key_schema_arguments'] : array();
+    $schema = call_user_func_array(array($destination_class, 'getKeySchema'), $key_schema_args);
+
     // @todo Add support to make the map class configurable.
     return new MigrateSQLMap(
       $arguments['machine_name'],
       $map['source_key'],
-      $destination_class::getKeySchema()
+      $schema
     );
   }
 
