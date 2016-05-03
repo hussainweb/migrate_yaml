@@ -92,6 +92,10 @@ abstract class MigrateYamlMigration extends Migration {
         $field_mapping->callbacks($callback);
       }
     }
+
+    if (isset($mapping['separator'])) {
+      $field_mapping->separator($mapping['separator']);
+    }
   }
 
   protected function processUnmigratedMapping(array $mapping, array $arguments) {
