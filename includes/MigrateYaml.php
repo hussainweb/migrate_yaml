@@ -42,6 +42,7 @@ class MigrateYaml {
       'arguments' => array(),
       'dependencies' => array(),
       'unmigrated_mappings' => array(),
+      'highwater_field' => array(),
     );
 
     $arguments = $data['arguments'];
@@ -49,6 +50,7 @@ class MigrateYaml {
     $arguments['mappings'] = $data['mappings'];
     $arguments['source'] = $data['source'];
     $arguments['destination'] = $data['destination'];
+    $arguments['highwater_field'] = $data['highwater_field'];
     $arguments['map'] = $data['map'];
     $arguments['dependencies'] = $data['dependencies'];
     $arguments['unmigrated_mappings'] = $data['unmigrated_mappings'];

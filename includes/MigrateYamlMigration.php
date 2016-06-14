@@ -25,6 +25,10 @@ abstract class MigrateYamlMigration extends Migration {
     $this->destination = $this->getDestinationFromConfig($destination, $arguments);
     $this->map = $this->getMapFromConfig($map, $arguments);
 
+    if (!empty($arguments['highwater_field'])) {
+      $this->highwaterField = $arguments['highwater_field'];
+    }
+
     foreach ($mappings as $destination_field => $mapping) {
       // Set up each mapping.
       $this->processMapping($destination_field, $mapping, $arguments);
