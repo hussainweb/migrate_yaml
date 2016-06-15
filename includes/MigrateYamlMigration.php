@@ -100,6 +100,10 @@ abstract class MigrateYamlMigration extends Migration {
     if (isset($mapping['separator'])) {
       $field_mapping->separator($mapping['separator']);
     }
+
+    if (isset($mapping['dedupe'])) {
+      $field_mapping->dedupe($mapping['dedupe']['table'], $mapping['dedupe']['column']);
+    }
   }
 
   protected function processUnmigratedMapping(array $mapping, array $arguments) {
