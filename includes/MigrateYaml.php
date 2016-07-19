@@ -40,9 +40,14 @@ class MigrateYaml {
 
     $data += array(
       'arguments' => array(),
+      'mappings' => array(),
+      'source' => array(),
+      'destination' => array(),
+      'highwater_field' => array(),
+      'map' => array(),
       'dependencies' => array(),
       'unmigrated_mappings' => array(),
-      'highwater_field' => array(),
+      'group_name' => '',
     );
 
     $arguments = $data['arguments'];
