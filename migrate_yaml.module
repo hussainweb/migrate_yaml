@@ -38,8 +38,8 @@ function migrate_yaml_register_migrations($reset = NULL) {
       'key' => 'filename',
     );
 
-    $yaml_files = file_scan_directory($path, '/\.yaml/', $options);
-    $group_yaml_files = file_scan_directory($groups_path, '/\.yaml/', $options);
+    $yaml_files = file_scan_directory($path, '/\.ya?ml$/', $options);
+    $group_yaml_files = file_scan_directory($groups_path, '/\.ya?ml$/', $options);
 
     _migrate_yaml_register_files($group_yaml_files, 'group', $group_arguments);
     _migrate_yaml_register_files($yaml_files, 'migration', $common_arguments);
