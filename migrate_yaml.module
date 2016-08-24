@@ -34,7 +34,7 @@ function migrate_yaml_register_migrations($reset = NULL) {
     $group_arguments = $migration_yaml_data['group arguments'];
 
     $options = array(
-      'recuse' => $recursive,
+      'recurse' => $recursive,
       'key' => 'filename',
     );
 
