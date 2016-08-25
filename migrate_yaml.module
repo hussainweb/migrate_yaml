@@ -26,8 +26,15 @@ function migrate_yaml_register_migrations($reset = NULL) {
     );
 
     $module_path = DRUPAL_ROOT . base_path() . drupal_get_path('module', $module) . '/';
-    $path = $module_path . $migration_yaml_data['path'];
-    $groups_path = $module_path . $migration_yaml_data['groups path'];
+    $path = $migration_yaml_data['path'];
+    $groups_path = $migration_yaml_data['groups path'];
+
+    if (!$path) {
+      watchdog('migrate_yaml', 'The module @module does not define the mandatory "path" argument', array(
+        '@module' => $module,
+      ), WATCHDOG_ERROR);
+      return;
+    }
 
     $recursive = $migration_yaml_data['recursive'];
     $common_arguments = $migration_yaml_data['common arguments'];
@@ -38,10 +45,12 @@ function migrate_yaml_register_migrations($reset = NULL) {
       'key' => 'filename',
     );
 
-    $yaml_files = file_scan_directory($path, '/\.ya?ml$/', $options);
-    $group_yaml_files = file_scan_directory($groups_path, '/\.ya?ml$/', $options);
+    if ($groups_path) {
+      $group_yaml_files = file_scan_directory($module_path . $groups_path, '/\.ya?ml$/', $options);
+      _migrate_yaml_register_files($group_yaml_files, 'group', $group_arguments);
+    }
 
-    _migrate_yaml_register_files($group_yaml_files, 'group', $group_arguments);
+    $yaml_files = file_scan_directory($module_path . $path, '/\.ya?ml$/', $options);
     _migrate_yaml_register_files($yaml_files, 'migration', $common_arguments);
   }
 }
